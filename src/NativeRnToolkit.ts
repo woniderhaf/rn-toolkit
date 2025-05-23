@@ -2,8 +2,6 @@ import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
 import type { ICall, IContact, ISMS } from './interfaces';
 
-// todo если перенести в интерфейсы то получаю ошибку
-// "Unrecognized generic type 'ICallFilters' in NativeModule spec."
 export interface ICallFilters {
   minDate?: number;
   limit?: number;
