@@ -2,16 +2,11 @@
   "name": "rn-toolkit",
   "version": "0.1.0",
   "description": "react native toolkit",
-  "main": "./lib/module/index.js",
-  "types": "./lib/typescript/src/index.d.ts",
-  "exports": {
-    ".": {
-      "source": "./src/index.tsx",
-      "types": "./lib/typescript/src/index.d.ts",
-      "default": "./lib/module/index.js"
-    },
-    "./package.json": "./package.json"
-  },
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
   "files": [
     "src",
     "lib",
@@ -134,12 +129,8 @@
     "source": "src",
     "output": "lib",
     "targets": [
-      [
-        "module",
-        {
-          "esm": true
-        }
-      ],
+      "commonjs",
+      "module",
       [
         "typescript",
         {
@@ -151,10 +142,7 @@
   "codegenConfig": {
     "name": "RnToolkitSpec",
     "type": "modules",
-    "jsSrcsDir": "src",
-    "android": {
-      "javaPackageName": "com.rntoolkit"
-    }
+    "jsSrcsDir": "src"
   },
   "create-react-native-library": {
     "languages": "kotlin-objc",
