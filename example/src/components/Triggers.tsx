@@ -1,44 +1,77 @@
-import { Button, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Button,
+  PermissionsAndroid,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { Box } from './index';
-import NativeModels, {
-  type IdParamsType,
-  type IResult,
-  NativeModulesTriggers,
-} from 'rn-toolkit';
+import NativeModels from 'rn-toolkit';
+import ToolkitTriggerManager, {
+  type IToolkitTrigger,
+  type IToolkitTriggerResult,
+} from '../ToolkitTriggerManager';
 import { useState } from 'react';
 import { generateItems } from '../utils/generateItems';
 import List from './List';
 import Title from './Title';
 
 const Triggers = ({ back }: { back: () => void }) => {
-  const [data, setData] = useState<Array<IResult>>([]);
+  const [data, setData] = useState<Array<IToolkitTriggerResult>>([]);
+
+  const requestPermissions = async () => {
+    return new Promise(async (resolve) => {
+      await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+        PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
+        PermissionsAndroid.PERMISSIONS.READ_SMS,
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+      ]);
+      resolve(null);
+    });
+  };
 
   const firstLaunchTrigger = () => {
-    const firstLaunchParams: IdParamsType = {
+    const firstLaunchParams: IToolkitTrigger = {
       install_id: NativeModels.getInstallId,
       install_referrer: NativeModels.getInstallReferrer,
     };
 
     setData([]);
-    NativeModulesTriggers.firstLaunchTrigger(firstLaunchParams).then((res) => {
-      setData(res);
-    });
+    ToolkitTriggerManager.runTrigger(firstLaunchParams).then(setData);
   };
 
-  const newSessionTrigger = () => {
-    const newSessionParams: IdParamsType = {
+  const getCoarseLocation = async () => {
+    await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+    );
+    return NativeModels.getCoarseLocation();
+  };
+
+  const newSessionTrigger = async () => {
+    const newSessionParams: IToolkitTrigger = {
       app_version: NativeModels.getAppVersion,
       os_parameters: NativeModels.getOSParameters,
       session_id: NativeModels.createSessionId,
       date_time: NativeModels.getLocalDateTime,
-      location: NativeModels.getCoarseLocation,
+      location: getCoarseLocation,
+      sms: NativeModels.getSMS,
+      contacts: NativeModels.getContacts,
+      calls: NativeModels.getCalls,
       fingerprint: NativeModels.getFingerprint,
     };
 
     setData([]);
-    NativeModulesTriggers.newSessionTrigger(newSessionParams).then((res) => {
-      setData(res);
-    });
+
+    await requestPermissions();
+    ToolkitTriggerManager.runTrigger(newSessionParams)
+      .then((res) => {
+        console.log(res);
+        setData(res);
+      })
+      .catch((er) => {
+        console.log(er);
+      });
   };
 
   return (

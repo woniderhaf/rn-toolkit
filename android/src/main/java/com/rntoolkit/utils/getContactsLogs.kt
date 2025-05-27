@@ -10,12 +10,9 @@ import android.provider.ContactsContract
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.*
 
-fun getContactsLogs(context: Context, filters: ReadableMap?): WritableArray {
+fun getContactsLogs(context: Context): WritableArray {
   val contacts = Arguments.createArray()
   val resolver: ContentResolver = context.contentResolver
-
-  // фильтры
-  val limit = filters?.getInt("limit") ?: 100
 
   val cursor: Cursor? = resolver.query(
     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -27,7 +24,7 @@ fun getContactsLogs(context: Context, filters: ReadableMap?): WritableArray {
     ),
     null,
     null,
-    "${ContactsContract.Contacts.DISPLAY_NAME} ASC LIMIT $limit"
+    null
   )
 
   cursor?.use {

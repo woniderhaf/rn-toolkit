@@ -89,27 +89,27 @@ class RnToolkitModule(reactContext: ReactApplicationContext) :
       }
   }
 
-  override fun getCalls(filters: ReadableMap?, promise: Promise) {
+  override fun getCalls(promise: Promise) {
     try {
-      val logs = getCallLogs(context, filters)
+      val logs = getCallLogs(context)
       promise.resolve(logs)
     } catch (e: Exception) {
       promise.reject("CALL_LOG_ERROR", "Failed to read call logs", e)
     }
   }
 
-  override fun getContacts(filters: ReadableMap?, promise: Promise) {
+  override fun getContacts(promise: Promise) {
     try {
-      val contacts = getContactsLogs(context, filters)
+      val contacts = getContactsLogs(context)
       promise.resolve(contacts)
     } catch (e: Exception) {
       promise.reject("CONTACTS_LOG_ERROR", "Failed to read contacts logs", e)
     }
   }
 
-  override fun getSMS(filters:ReadableMap?, promise: Promise) {
+  override fun getSMS(promise: Promise) {
     try {
-      val sms = getSMSLogs(context, filters)
+      val sms = getSMSLogs(context)
       promise.resolve(sms)
     } catch (e: Exception) {
       promise.reject("SMS_LOG_ERROR", "Failed to read sms logs", e)

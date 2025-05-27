@@ -11,12 +11,6 @@ import Toolkit from 'rn-toolkit';
 import { useEffect, useState } from 'react';
 import type { ICall, IContact, ISMS } from '../../../src/interfaces';
 
-const CONSTANTS = {
-  MAX_CONTACTS: 25,
-  MAX_SMS: 10,
-  SMS_DAYS: 7,
-};
-
 const AllData = ({ back }: { back: () => void }) => {
   const [calls, setCalls] = useState<ICall[]>([]);
   const [sms, setSMS] = useState<ISMS[]>([]);
@@ -72,17 +66,11 @@ const AllData = ({ back }: { back: () => void }) => {
         console.log('er finger: ', er);
       });
 
-    const smsDate = new Date();
-    smsDate.setDate(smsDate.getDate() - CONSTANTS.SMS_DAYS); // за последние 7 дней
-
     const callsPermission = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.READ_CALL_LOG
     );
     if (callsPermission === PermissionsAndroid.RESULTS.GRANTED) {
-      Toolkit.getCalls({
-        limit: 20,
-        minDate: smsDate.getTime(),
-      })
+      Toolkit.getCalls()
         .then(setCalls)
         .catch((er) => {
           console.log(er);
@@ -94,7 +82,7 @@ const AllData = ({ back }: { back: () => void }) => {
     );
 
     if (contactsPermission === PermissionsAndroid.RESULTS.GRANTED) {
-      Toolkit.getContacts({ limit: CONSTANTS.MAX_CONTACTS })
+      Toolkit.getContacts()
         .then(setContacts)
         .catch(() => {});
     }
@@ -104,7 +92,7 @@ const AllData = ({ back }: { back: () => void }) => {
     );
 
     if (smsPermission === PermissionsAndroid.RESULTS.GRANTED) {
-      Toolkit.getSMS({ limit: CONSTANTS.MAX_SMS })
+      Toolkit.getSMS()
         .then(setSMS)
         .catch((er) => {
           console.log(er);
@@ -184,7 +172,6 @@ sms
           ))}
           <View style={{ alignSelf: 'center' }}>
             <List title={'length'} value={sms.length} />
-            <List title={'лимит'} value={CONSTANTS.MAX_SMS} />
           </View>
         </Box>
         {/*
@@ -196,7 +183,6 @@ contacts
           ))}
           <View style={styles.center}>
             <List title={'length'} value={contacts.length} />
-            <List title={'лимит'} value={CONSTANTS.MAX_CONTACTS} />
           </View>
         </Box>
         {/*

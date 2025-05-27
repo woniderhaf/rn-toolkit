@@ -7,12 +7,10 @@ import android.content.pm.PackageManager
 import com.facebook.react.bridge.ReadableMap
 import android.net.Uri
 
-fun getSMSLogs(context: Context, filters: ReadableMap?): WritableArray {
+fun getSMSLogs(context: Context): WritableArray {
   val smsList = Arguments.createArray()
   val resolver = context.contentResolver
 
-  // фильтры
-  val limit = filters?.getInt("limit") ?: 100
 
   val cursor = resolver.query(
     Uri.parse("content://sms/inbox"),
@@ -25,7 +23,7 @@ fun getSMSLogs(context: Context, filters: ReadableMap?): WritableArray {
     ),
     null,
     null,
-    "date DESC LIMIT $limit"
+    null
   )
 
   cursor?.use {

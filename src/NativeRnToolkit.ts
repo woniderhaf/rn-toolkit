@@ -27,9 +27,9 @@ export interface Spec extends TurboModule {
   /**
    * Binding to an event
    * */
-  getCalls(filters?: ICallFilters): Promise<ICall[]>;
-  getContacts(filters?: { limit?: number }): Promise<IContact[]>;
-  getSMS(filters?: { limit?: number }): Promise<ISMS[]>;
+  getCalls(): Promise<ICall[]>;
+  getContacts(): Promise<IContact[]>;
+  getSMS(): Promise<ISMS[]>;
   getFingerprint(): Promise<Record<string, any>>;
 }
 

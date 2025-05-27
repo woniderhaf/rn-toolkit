@@ -11,25 +11,11 @@ import com.facebook.react.bridge.ReadableMap
 import android.os.Build
 import com.facebook.react.bridge.*
 
-fun getCallLogs(context: Context, filters: ReadableMap?): WritableArray {
+fun getCallLogs(context: Context): WritableArray {
   val logs = Arguments.createArray()
   val resolver: ContentResolver = context.contentResolver
 
-  // параметры фильтрации
-  var minDate = filters?.getDouble("minDate")?.toLong() ?: 0L
-  val limit = filters?.getInt("limit") ?: 100
 
-  val selection = if (minDate > 0) {
-    "${CallLog.Calls.DATE} > ?"
-  } else {
-    null
-  }
-
-  val selectionArgs = if (minDate > 0) {
-    arrayOf(minDate.toString())
-  } else {
-    null
-  }
 
   val projection = arrayOf(
     CallLog.Calls.NUMBER,
@@ -39,15 +25,12 @@ fun getCallLogs(context: Context, filters: ReadableMap?): WritableArray {
     CallLog.Calls.CACHED_NAME
   )
 
-  val sortOrder = "${CallLog.Calls.DATE} DESC LIMIT $limit"
-
-
   val cursor = resolver.query(
     CallLog.Calls.CONTENT_URI,
     projection,
-    selection,
-    selectionArgs,
-    sortOrder
+    null,
+    null,
+    null
   )
 
   cursor?.use {
